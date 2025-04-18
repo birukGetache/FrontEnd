@@ -1,0 +1,219 @@
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height:100vh;
+    width:100vw;
+}
+.left-section {
+    max-width: 50%;
+}
+.left-section h1 {
+    font-size: 3rem;
+    margin: 0;
+    line-height: 1.2;
+}
+.left-section h1 span {
+    color: #080a28;
+}
+.left-section p {
+    font-size: 1.2rem;
+    margin: 20px 0;
+    color: #444;
+}
+.get-started-btn {
+    background-color: #080a28;
+    color: #444;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+.get-started-btn::after {
+    content: '→';
+    margin-left: 10px;
+}
+.right-section {
+    position: relative;
+    width: 100%;
+    max-width: 50%;
+    height: 300px; /* Set a fixed height */
+    text-align: center;
+    border-radius: 30px;
+  }
+  
+
+.blue-splash {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+    background: #080a28;
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0.7;
+}
+.badge {
+    position: absolute;
+    background: #080a28;
+    color: #444;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+.badge::before {
+    content: '•';
+    margin-right: 5px;
+    font-size: 1.2rem;
+}
+.badge-1 {
+    top: 10%;
+    right: 0;
+}
+.badge-2 {
+    bottom: 10%;
+    right: 0;
+}
+.icons {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+.icon {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: #fff; /* Placeholder for icons */
+    border-radius: 50%;
+}
+.icon-1 {
+    top: 10%;
+    left: 10%;
+}
+.icon-2 {
+    bottom: 20%;
+    left: 5%;
+}
+.icon-3 {
+    top: 5%;
+    right: 10%;
+}
+.secondContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .rectangle {
+    position: absolute;
+    top:75px;
+    left:15%;
+    width: 200px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+  }
+  .rectangle2 {
+    position: absolute;
+    top:150px;
+    right:15%;
+    width: 200px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap:10px;
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+  }
+  .outerglow-point {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: relative;
+    background: radial-gradient(circle, rgba(115, 183, 255, 0.4) 0%, rgba(115, 183, 255, 0.1) 60%, transparent 100%);
+    animation: outerWave 3s infinite ease-out; /* Increased duration and changed easing */
+    overflow: hidden;
+  }
+  
+  /* Glow point remains the same */
+  .glow-point {
+    width: 15px;
+    height: 15px;
+    background-color: #007bff;
+    border-radius: 50%;
+    position: relative;
+  }
+  
+  /* Glow emission from the center dot */
+  .glow-point::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0, 123, 255, 0.6) 0%, transparent 70%);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    animation: emitGlow 3s infinite ease-out; /* Increased duration for smoother glow */
+    z-index: -1;
+  }
+  
+  /* Glow emission animation */
+  @keyframes emitGlow {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.6;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(3); /* Increased scale for a larger effect */
+      opacity: 0.2;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.6;
+    }
+  }
+  
+  /* Wave-like spreading background from the center (glow point) */
+  @keyframes outerWave {
+    0% {
+      background: radial-gradient(circle, rgba(115, 183, 255, 0.4) 0%, rgba(115, 183, 255, 0.1) 60%, transparent 100%);
+      background-size: 100% 100%;
+      background-position: center;
+    }
+    50% {
+      background: radial-gradient(circle, rgba(115, 183, 255, 0.6) 0%, rgba(115, 183, 255, 0.2) 70%, transparent 100%);
+      background-size: 300% 300%; /* Increased background size for smoother transition */
+      background-position: center;
+    }
+    100% {
+      background: radial-gradient(circle, rgba(115, 183, 255, 0.4) 0%, rgba(115, 183, 255, 0.1) 60%, transparent 100%);
+      background-size: 100% 100%;
+      background-position: center;
+    }
+  }
+  

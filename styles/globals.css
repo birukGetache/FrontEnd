@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0a0a;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html ,body  {
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  padding-top: 0;
+  background-color: #0a0a0a;
+}
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .backdrop-blur-md {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  
+}
+.slideTrack {
+  display: flex;
+  width: 800%; /* Set width to double the slides, as we have 7 slides duplicated */
+  animation: marquee 20s linear infinite; /* Smooth continuous animation */
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  height: 150px;
+}
+
+.slides {
+  flex: 0 0 auto;
+  width: 100vw; /* Fixed width for each slide */
+  margin-right: 16px;
+  scroll-snap-align: start;
+  height: 100vh;
+}
+
+/* Keyframes for seamless infinite loop */
+@keyframes marquee {
+  0% {
+    transform: translateX(0); /* Start from the beginning */
+  }
+  100% {
+    transform: translateX(-100%); /* Move by the total width of the container */
+  }
+}
+
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 3s ease infinite;
+}
+
+.mask-paypal {
+  mask: url('https://www.paypalobjects.com/webstatic/icon/pp32.png') no-repeat center;
+  -webkit-mask: url('https://www.paypalobjects.com/webstatic/icon/pp32.png') no-repeat center;
+}
+
+.wave-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(to right, rgba(59, 130, 246, 0.5), rgba(75, 149, 234, 0.5));
+  border-radius: 1000px 1000px 0 0;
+  animation: wave 8s infinite linear;
+}
+
+.wave-layer-2 {
+  background: linear-gradient(to right, rgba(37, 99, 235, 0.4), rgba(96, 165, 250, 0.4));
+  animation: wave 10s infinite linear reverse;
+  height: 80px;
+  bottom: 10px;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(1000px);
+  }
+}
+.frame {
+  position: relative;
+  background: transparent;
+
+}
+
+.corner {
+  width: 360px;
+  height: 360px;
+  position: absolute;
+  border: 3px solid rgb(4, 8, 33);
+
+}
+
+.top-left {
+  top: 0;
+  left: 0;
+  border-right: none;
+  border-bottom: none;
+}
+
+.bottom-right {
+  bottom: 0;
+  right: 0;
+  border-left: none;
+  border-top: none;
+}
+
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
