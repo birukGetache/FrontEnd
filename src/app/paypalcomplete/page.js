@@ -1,10 +1,9 @@
 'use client';
 
 import axios from 'axios';
-import { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FaPaypal } from 'react-icons/fa'; // Import PayPal icon from react-icons
-
+export const dynamic = 'force-dynamic'; 
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams(); // Hook to access query parameters
@@ -35,7 +34,7 @@ if(response.data.message === "Booking created successfully"){
   };
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+
     <div className="flex items-center justify-center h-screen bg-slate-700 ">
       <div className="bg-gradient-to-br  from-blue-300 via-white to-blue-200 bg-opacity-20 backdrop-blur-lg shadow-xl rounded-2xl p-10 text-center">
         <h1 className="text-3xl font-semibold text-gray-800 mb-6">PayPal Approve</h1>
@@ -49,6 +48,5 @@ if(response.data.message === "Booking created successfully"){
         </button>
       </div>
     </div>
-    </Suspense>
   );
 }
