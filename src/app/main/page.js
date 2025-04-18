@@ -1,10 +1,10 @@
 
 "use client"
-import Background from '../component/BackgroundPart';
+import Background from '../components/BackgroundPart';
 import { motion } from "framer-motion";
 import React, { useEffect,useState, useRef } from "react";
 import { FaEdit, FaListAlt, FaCodeBranch ,FaPenAlt ,FaShareAlt , FaChartLine} from "react-icons/fa"; // Example icons from react-icons
-import Footer from '../component/Footer';
+import Footer from '../components/TanaFotter';
 const Home = () => {
    
   
