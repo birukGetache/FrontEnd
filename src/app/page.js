@@ -108,9 +108,9 @@ const [destination , setDestnation] = useState([]);
 
       <div className=" font-playfair ">
 
-      <div className="pt-3 min-h-screen w-full px-4 sm:px-6 md:px-10 lg:px-20">
+      <div className="pt-3 mt-10 min-h-screen w-full px-4 sm:px-6 md:px-10 lg:px-20">
       <motion.div
-      className="flex flex-col xxl:flex-row items-center gap-6"
+      className="flex sm:flex-col xxm:flex-col xxl:flex-row  items-center gap-6"
       ref={ref}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={controls}
@@ -118,13 +118,13 @@ const [destination , setDestnation] = useState([]);
       <div className="w-full xxl:w-1/2">
         <TransportCard darkMode={darkMode} setDarkMode={setDarkMode} />
       </div>
-      <div className="w-full xxl:w-1/2 frame">
+      <div className="w-full xxl:w-1/2 frame h-full">
         <div className="corner top-left"></div>
         <div className="corner bottom-right"></div>
         <img
           src="/tanalake.JPG"
           alt="left"
-          className="rounded-lg"
+          className="rounded-lg w-full"
         />
       </div>
     </motion.div>
@@ -136,7 +136,7 @@ const [destination , setDestnation] = useState([]);
 <InfoCard></InfoCard>
 <BlogView></BlogView>
 <Map></Map>
-<div className=" h-68 grid ">
+<div className=" h-68 grid mb-10">
 <Faq></Faq>
 <NewsletterSignup></NewsletterSignup>
 </div>

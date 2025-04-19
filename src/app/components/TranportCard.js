@@ -43,7 +43,7 @@ const TransportCard = ({darkMode , setDarkMode}) => {
         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
       />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 h-full relative z-10">
+      <div className="flex flex-col md:flex-row h-full relative z-10">
         {/* Left: Lake Tana System Context */}
         <div
           className="p-6 md:p-8 h-full flex flex-col"
@@ -107,7 +107,7 @@ const TransportCard = ({darkMode , setDarkMode}) => {
             {[
               { text: "Papyrus Boats (Tankwas): Traditional reed boats used by locals for fishing and short trips" },
               { text: "Boat Tours: Local operators offer monastery tours and Blue Nile Falls trips" },
-              { text: "Ferries & Motorboats: Modern vessels link islands and Bahir Dar" }
+     
             ].map((item, index) => (
               <motion.li
                 key={index}
@@ -121,15 +121,6 @@ const TransportCard = ({darkMode , setDarkMode}) => {
               </motion.li>
             ))}
           </ul>
-          <motion.a
-            href="#"
-            className="mt-4 inline-flex items-center px-4 py-2 bg-[#a86747] text-gray-600 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors self-start"
-            whileHover={{ scale: 1.05, x: 5 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Explore Tours
-            <Sailboat className="w-4 h-4 ml-2" />
-          </motion.a>
         </div>
       </div>
     </motion.div>

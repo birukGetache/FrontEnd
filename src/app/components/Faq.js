@@ -14,12 +14,12 @@ const Faq = () => {
       answer: 'Once your order ships, you’ll receive a tracking number via email. You can use it on our website to check the status.',
     },
     {
-      question: 'Do you offer international shipping?',
-      answer: 'Yes, we ship to over 50 countries. Shipping costs and times vary based on location.',
+      question: 'How many destinations are there on Lake Tana?',
+      answer: 'There are over 20 destinations on Lake Tana, including historic monasteries, islands, and scenic spots.',
     },
     {
       question: 'How can I contact customer support?',
-      answer: 'You can reach us via email at bernos@gmail.com or call us at 0909090909 during business hours.',
+      answer: 'You can reach us via email at nahom@gmail.com or call us at 0909090909 during business hours.',
     },
   ];
 

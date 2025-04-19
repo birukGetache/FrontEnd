@@ -90,7 +90,7 @@ const CombinedNavBar = ({ darkMode, setDarkMode }) => {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/40 backdrop-blur-lg shadow-md dark:bg-gray-800/10">
+    <header className="fixed top-0 left-0 right-0 z-[1000] bg-gray-900/40 backdrop-blur-lg shadow-md dark:bg-gray-800/10">
       <div className="w-screen px-5 sm:px-20 py-3">
         <div className="flex justify-between items-center">
           {/* Logo */}

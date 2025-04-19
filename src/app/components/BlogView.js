@@ -189,7 +189,7 @@ const App = ({id}) => {
                 >
                   <FaThumbsUp className="mr-1" size={14} /> {post.likes} {t("likes")}
                 </motion.button>
-                <motion.button
+                {/* <motion.button
                   onClick={() => handleFavorite(post._id)}
                   className={`flex items-center px-3 py-1 rounded-full text-sm transition-all duration-200 ${
                     post.isFavorite
@@ -214,7 +214,7 @@ const App = ({id}) => {
                 >
                   <FaThumbtack className="mr-1" size={14} />{" "}
                   {post.isPinned ? t("pinned") : t("pin")}
-                </motion.button>
+                </motion.button> */}
               </motion.div>
 
               <motion.div 
