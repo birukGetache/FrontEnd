@@ -9,6 +9,12 @@ const Slider = () => {
   const router = useRouter();
   const [slides] = useState([
     {
+      id: 7,
+      name: "Priests and Church Life",
+      description: "Experience the deep-rooted spiritual practices of Orthodox priests, from morning prayers to sacred rituals on Lake Tana's islands.",
+      imageUrl: "/priest.png"
+    },
+    {
       id: 1,
       name: "Lake Tana at Night",
       description: "A stunning nighttime view of Lake Tana, with the city lights reflecting on its calm waters.",
@@ -27,12 +33,6 @@ const Slider = () => {
       imageUrl: "/Dek.png"
     },
     {
-      id: 4,
-      name: "Bird Watching on Tana",
-      description: "Lake Tana is a haven for birdwatchers, featuring a wide variety of native and migratory bird species.",
-      imageUrl: "/TanaBird.png"
-    },
-    {
       id: 5,
       name: "Fishing on Lake Tana",
       description: "Fishing is both a way of life and a peaceful tradition on Lake Tana, offering locals daily connection with the water.",
@@ -44,12 +44,7 @@ const Slider = () => {
       description: "Visit the legendary monasteries of Lake Tana, where sacred manuscripts and icons have been preserved for centuries.",
       imageUrl: "/TanaBible.png"
     },
-    {
-      id: 7,
-      name: "Priests and Church Life",
-      description: "Experience the deep-rooted spiritual practices of Orthodox priests, from morning prayers to sacred rituals on Lake Tana's islands.",
-      imageUrl: "/priest.png"
-    }
+   
   ]);
   
   

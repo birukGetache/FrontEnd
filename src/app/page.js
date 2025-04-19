@@ -110,7 +110,7 @@ const [destination , setDestnation] = useState([]);
 
       <div className="pt-3 mt-10 min-h-screen w-full px-4 sm:px-6 md:px-10 lg:px-20">
       <motion.div
-      className="flex sm:flex-col xxm:flex-col xxl:flex-row  items-center gap-6"
+      className="flex flex-col xxm:flex-col xxl:flex-row  items-center gap-6"
       ref={ref}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={controls}
