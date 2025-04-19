@@ -108,28 +108,35 @@ const [destination , setDestnation] = useState([]);
 
       <div className=" font-playfair ">
 
-      <div className="pt-3 mt-10 min-h-screen w-full px-4 sm:px-6 md:px-10 lg:px-20">
-      <motion.div
-      className="flex flex-col xxm:flex-col xxl:flex-row  items-center gap-6"
-      ref={ref}
-      initial={{ scale: 0.95, opacity: 0 }}
-      animate={controls}
-    >
-      <div className="w-full xxl:w-1/2">
-        <TransportCard darkMode={darkMode} setDarkMode={setDarkMode} />
-      </div>
-      <div className="w-full xxl:w-1/2 frame h-full">
-        <div className="corner top-left"></div>
-        <div className="corner bottom-right"></div>
+      <div className="pt-6 mt-10 w-full px-4 sm:px-6 md:px-10 lg:px-20">
+  <motion.div
+    className="flex flex-col xl:flex-row items-center gap-8 xl:h-[27rem]"
+    ref={ref}
+    initial={{ scale: 0.95, opacity: 0 }}
+    animate={controls}
+  >
+    {/* Left: Card Section */}
+    <div className="w-full xl:w-1/2 h-auto xl:h-full">
+      <TransportCard darkMode={darkMode} setDarkMode={setDarkMode} />
+    </div>
+
+    {/* Right: Image Section */}
+    <div className="w-full xl:w-1/2 h-64 sm:h-80 md:h-96 xl:h-full relative">
+      <div className="absolute top-0 left-0 w-full h-full z-10 rounded-lg overflow-hidden">
         <img
-          src="/tanalake.JPG"
-          alt="left"
-          className="rounded-lg w-full"
+          src="/boat.png"
+          alt="Boat on Lake Tana"
+          className="w-full h-full object-cover rounded-lg"
         />
       </div>
-    </motion.div>
 
+      {/* Optional Decorative Corners */}
+      <div className="corner top-left absolute top-0 left-0 z-20"></div>
+      <div className="corner bottom-right absolute bottom-0 right-0 z-20"></div>
+    </div>
+  </motion.div>
 </div>
+
        
 <Destination setVisibleCardId={setVisibleCardId} setDestnation={setDestnation}></Destination>
 <MagazineSection></MagazineSection>

@@ -119,7 +119,7 @@ const CombinedNavBar = ({ darkMode, setDarkMode }) => {
                 className={`flex items-center px-4 py-2 rounded-lg transition-all duration-300 focus:outline-none ${
                   activeSection === tab.id
                     ? 'bg-gray-600 text-white dark:bg-gray-700'
-                    : 'hover:bg-gray-200 text-gray-700 dark:hover:bg-gray-700 dark:text-gray-800'
+                    : 'hover:bg-gray-200 text-blue-700 dark:hover:bg-gray-700 dark:text-blue-800'
                 }`}
               >
                 <span className="text-sm font-medium">

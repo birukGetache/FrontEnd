@@ -6,7 +6,7 @@ export default {
     extend: {
       screens: {
         'xxl': '1400px', // custom breakpoint at 1400px
-        "xxm":'817px'
+        "xxm":'750px'
       },
       fontFamily: {
         playfair: ["Nunito", 'serif'], // Corrected comment
