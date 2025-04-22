@@ -151,6 +151,7 @@ const Dashboard = () => {
   const sideBarContent = {sidebarOpen , setSidebarOpen , activeTab , setActiveTab , FiX ,FiCalendar , FiMenu , SidebarItem , FiDollarSign, FiAlertCircle, FiClock, FiList, FiUsers , FiLogOut , FiLock}
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
      <SideBar {...sideBarContent}></SideBar>
@@ -744,11 +745,13 @@ const Dashboard = () => {
         </div>
       )}
     </div>
+    </Suspense>
   );
 };
 
 const SidebarItem = ({ icon, text, active, onClick, sidebarOpen }) => {
   return (
+   
     <button
       onClick={onClick}
       className={`flex items-center w-full px-6 py-3 transition-colors duration-200 ${active ? 'bg-gray-700 text-white' : 'text-gray-100 hover:bg-gray-700 hover:bg-opacity-50'}`}
@@ -773,6 +776,7 @@ const StatCard = ({ title, value, change, icon }) => {
         </div>
       </div>
     </div>
+    
   );
 };
 
