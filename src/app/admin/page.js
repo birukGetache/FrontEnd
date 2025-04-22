@@ -14,17 +14,6 @@ const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState("chart"); // Default is Chart
   const [Loginsuccess ,setLoginSuccess ] = useState(false);
   const router = useRouter();
-
-  // Check for token on component mount
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-
-  //   // If no token is found, redirect to the login page
-  //   if (!token) {
-  //     router.push("/adminAuth");
-  //   }
-  // }, [router]);
-
   const renderComponent = () => {
     switch (activeComponent) {
       case "boatowner":
@@ -47,12 +36,14 @@ const AdminDashboard = () => {
   return (
  <>
       {
-        !Loginsuccess ?  <div className="flex">
-        <Sidebar setActiveComponent={setActiveComponent} />
-        <div className="flex-1 h-screen overflow-auto">{renderComponent()}</div>
-      </div>: (
-         <Login setLoginSuccess = {setLoginSuccess}></Login> 
-          )
+          !Loginsuccess ?(
+          <Login setLoginSuccess = {setLoginSuccess}></Login> 
+           )
+       : 
+          <div className="flex">
+          <Sidebar setActiveComponent={setActiveComponent} />
+          <div className="flex-1 h-screen overflow-auto">{renderComponent()}</div>
+        </div>
       }  
      </>    
   );

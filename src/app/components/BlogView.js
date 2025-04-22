@@ -4,17 +4,22 @@ import axios from "axios";
 import { FaThumbsUp, FaHeart, FaThumbtack, FaComment } from "react-icons/fa";
 import BottomNavBar from "../components/BottomNavBar";
 import { useTranslation } from "react-i18next";
+import BlogList from "@components/Blog/BlogList"
 import { motion } from "framer-motion";
 
 const App = ({id}) => {
   const [blogPosts, setBlogPosts] = useState([]);
-  const [commentInputs, setCommentInputs] = useState({});
   const [visibleComments, setVisibleComments] = useState({});
+    const [commentInputs, setCommentInputs] = useState({});
+    const handleCommentChange = (postId, value) => {
+      setCommentInputs((prev) => ({ ...prev, [postId]: value }));
+    };
+  
   const { t } = useTranslation();
 
   useEffect(() => {
     axios
-      .get("https://tankwaaddis.onrender.com/api/blogs")
+      .get("http://localhost:5000/api/blogs")
       .then((response) => {
         if (response.data.length > 0) {
           setBlogPosts(
@@ -32,6 +37,40 @@ const App = ({id}) => {
       })
       .catch((error) => console.error("Error fetching blogs:", error));
   }, []);
+
+   const handleCommentSubmit = (postId) => {
+    
+      const comment = commentInputs[postId];
+      console.log(comment)
+      if (comment?.trim()) {
+        axios
+          .post(`http://localhost:5000/api/blogs/${postId}/comments`, { comment })
+          .then((response) => {
+            setBlogPosts((prev) =>
+              prev.map((post) =>
+                post._id === postId ? { ...post, comments: response.data.comments } : post
+              )
+            );
+            setCommentInputs((prev) => ({ ...prev, [postId]: "" }));
+          })
+          .catch((error) => console.error("Error adding comment:", error));
+      }
+    };
+    
+
+  const handleLike = (postId) => {
+    axios
+      .post(`http://localhost:5000/api/blogs/${postId}/like`)
+      .then((response) => {
+        setBlogPosts((prev) =>
+          prev.map((post) =>
+            post._id === postId ? { ...post, likes: response.data.likes } : post
+          )
+        );
+      })
+      .catch((error) => console.error("Error liking the blog:", error));
+  };
+
 
   // Animation variants for in-view animations
   const containerVariants = {
@@ -72,6 +111,20 @@ const App = ({id}) => {
     }
   };
 
+  const handleShowMoreComments = (postId) => {
+    setVisibleComments((prev) => ({
+      ...prev,
+      [postId]: prev[postId] + 2,
+    }));
+  };
+
+  const handleShowLessComments = (postId) => {
+    setVisibleComments((prev) => ({
+      ...prev,
+      [postId]: 2,
+    }));
+  };
+  
   const commentVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: {
@@ -189,32 +242,6 @@ const App = ({id}) => {
                 >
                   <FaThumbsUp className="mr-1" size={14} /> {post.likes} {t("likes")}
                 </motion.button>
-                {/* <motion.button
-                  onClick={() => handleFavorite(post._id)}
-                  className={`flex items-center px-3 py-1 rounded-full text-sm transition-all duration-200 ${
-                    post.isFavorite
-                      ? "bg-red-50 text-red-700 hover:bg-red-100"
-                      : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-                  }`}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <FaHeart className="mr-1" size={14} />{" "}
-                  {post.isFavorite ? t("favorited") : t("favorite")}
-                </motion.button>
-                <motion.button
-                  onClick={() => handlePin(post._id)}
-                  className={`flex items-center px-3 py-1 rounded-full text-sm transition-all duration-200 ${
-                    post.isPinned
-                      ? "bg-yellow-50 text-yellow-700 hover:bg-yellow-100"
-                      : "bg-gray-50 text-gray-600 hover:bg-gray-100"
-                  }`}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <FaThumbtack className="mr-1" size={14} />{" "}
-                  {post.isPinned ? t("pinned") : t("pin")}
-                </motion.button> */}
               </motion.div>
 
               <motion.div 
@@ -247,7 +274,7 @@ const App = ({id}) => {
                   {post.comments.slice(0, visibleComments[post._id] || 2).map((comment, index) => (
                     <motion.div
                       key={index}
-                      className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
+                      className="text-gray-600 bg-gray-50 p-3 rounded-lg text-sm shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-md"
                       variants={commentVariants}
                       viewport={{ once: true }}
                     >

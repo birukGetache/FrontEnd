@@ -35,6 +35,7 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
     const [darkMode, setDarkMode] = useState(false);
   const [currentDate, setCurrentDate] = useState("");
+    const [currency, setCurrency] = useState("ETB");
   const [visibleCardId, setVisibleCardId] = useState(null);
 const [destination , setDestnation] = useState([]);
   const controls = useAnimation();
@@ -52,16 +53,29 @@ const [destination , setDestnation] = useState([]);
     const date = new Date();
     setCurrentDate(format(date, "MMMM dd, yyyy"));
   }, []);
+  // useEffect(() => {
+  //   // Try to force the background color first (this will be overwritten right after)
+  //   document.body.style.backgroundColor = '#000';
+  
+  //   const saved = localStorage.getItem('darkMode');
+  //   const isDark = saved === 'true';
+  //   console.log("isDark:", isDark);
+  
+  //   // Apply based on saved mode
+  //   document.body.style.backgroundColor = isDark ? '#000000' : '#ffffff';
+  
+  //   // Log the actual background color applied to body
+  //   console.log("Body backgroundColor:", getComputedStyle(document.body).backgroundColor);
+  // }, []);
+
   useEffect(() => {
     const saved = localStorage.getItem('darkMode');
     const isDark = saved === 'true';
-  
-    if (isDark) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
+    setDarkMode(isDark); // <-- Important!
   }, []);
+  
+  
+  
 
   useEffect(() => {
     const handleLoad = () => setLoading(false);
@@ -84,7 +98,7 @@ const [destination , setDestnation] = useState([]);
 
   if (loading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white">
+      <div className="fixed inset-0 z-50 flex items-center justify-center ">
 <Image
   src="/logo.png"
   alt="Logo"
@@ -138,7 +152,7 @@ const [destination , setDestnation] = useState([]);
 </div>
 
        
-<Destination setVisibleCardId={setVisibleCardId} setDestnation={setDestnation}></Destination>
+<Destination setVisibleCardId={setVisibleCardId} setDestnation={setDestnation} setCurrency={setCurrency} currency={currency}></Destination>
 <MagazineSection></MagazineSection>
 <InfoCard></InfoCard>
 <BlogView></BlogView>
@@ -151,7 +165,7 @@ const [destination , setDestnation] = useState([]);
       </div>
       <TanaFotter></TanaFotter>
       </div>
-     <AnimatePresence visibleCardId={visibleCardId} destination={destination}  setVisibleCardId ={setVisibleCardId}  modalVariants={modalVariants} i18n={i18n}> </AnimatePresence>
+     <AnimatePresence visibleCardId={visibleCardId} destination={destination}  setVisibleCardId ={setVisibleCardId}  modalVariants={modalVariants} i18n={i18n}currency={currency} > </AnimatePresence>
     </div>
 
   );

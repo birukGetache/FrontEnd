@@ -14,7 +14,7 @@ const Login = ({ setLoginSuccess }) => {
     setError("");
 
     try {
-      const response = await axios.post("https://tankwaaddis.onrender.com/apiuser/login", {
+      const response = await axios.post("http://localhost:5000/apiuser/login", {
         username,
         password
       });

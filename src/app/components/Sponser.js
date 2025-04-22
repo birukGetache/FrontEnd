@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaEye, FaEyeSlash, FaPlus } from 'react-icons/fa';
 
 const SponsorManagementPage = () => {
   const [sponsors, setSponsors] = useState([]);
-  const [visible , setVisible] = useState(false);
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     logo: null,
@@ -12,20 +12,20 @@ const SponsorManagementPage = () => {
     description: '',
     twitter: '',
     facebook: '',
-    instagram: ''
+    instagram: '',
+    isPublished: false
   });
-  const [logo , setLogo] = useState("");
-  const [public_id , setPublicId] = useState("")
-  const [editId, setEditId] = useState(null); // Track sponsor being edited
+  const [logo, setLogo] = useState("");
+  const [public_id, setPublicId] = useState("");
+  const [editId, setEditId] = useState(null);
+  const token = localStorage.getItem("authToken");
 
-  // Fetch all sponsors
   const fetchSponsors = async () => {
     try {
-      const response = await axios.get('https://tankwaaddis.onrender.com/sponser');
-    
+      const response = await axios.get('http://localhost:5000/sponser', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setSponsors(response.data);
-  
-      console.log(response.data)
     } catch (err) {
       console.error('Failed to fetch sponsors', err);
     }
@@ -35,198 +35,291 @@ const SponsorManagementPage = () => {
     fetchSponsors();
   }, []);
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle image file selection
   const handleFileChange = (e) => {
     setFormData({ ...formData, logo: e.target.files[0] });
   };
-  useEffect(() => {
-    console.log("formData updated:", formData);
-  }, [formData]);
-  
 
-  // Handle form submission for adding or updating sponsors
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    console.log("we are here please rreach out")
     const data = new FormData();
-    console.log(formData)
     data.append('name', formData.name);
-    if (formData.logo) {
-      console.log(logo)
-      data.append('logo', formData.logo);  // Add the new file to FormData
-    }
-    else{
-      console.log(logo)
-      data.append("logo" , logo)
-    }
+    formData.logo ? data.append('logo', formData.logo) : data.append('logo', logo);
     data.append('url', formData.url);
     data.append('description', formData.description);
     data.append('twitter', formData.twitter);
     data.append('facebook', formData.facebook);
     data.append('instagram', formData.instagram);
+    data.append('isPublished', formData.isPublished);
+
     try {
       if (editId) {
-        data.append('public_id', public_id); // ✅ append it to FormData
-  await axios.put(`https://tankwaaddis.onrender.com/sponser/${editId}`, data, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
+        data.append('public_id', public_id);
+        await axios.put(`http://localhost:5000/sponser/${editId}`, data, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`
+          }
+        });
       } else {
-        // Add new sponsor
-        await axios.post('https://tankwaaddis.onrender.com/sponser', data);
+        await axios.post('http://localhost:5000/sponser', data, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
       }
-      fetchSponsors(); // Refresh sponsor list
-      setFormData({
-        name: '',
-        logo: null,
-        url: '',
-        description: '',
-        twitter: '',
-        facebook: '',
-        instagram: ''
-      });
-      setEditId(null);
+      fetchSponsors();
+      resetForm();
     } catch (err) {
       console.error('Failed to save sponsor', err);
     }
   };
 
-  // Edit a sponsor
   const handleEdit = (sponsor) => {
-    console.log(sponsor)
-    setPublicId(sponsor.public_id)
+    setPublicId(sponsor.public_id);
     setEditId(sponsor._id);
     setFormData({
       name: sponsor.name,
-      logo: null, // Set to null since we don't have the file
+      logo: null,
       url: sponsor.url,
       description: sponsor.description,
       twitter: sponsor.twitter,
       facebook: sponsor.facebook,
-      instagram: sponsor.instagram
+      instagram: sponsor.instagram,
+      isPublished: sponsor.isPublished
     });
-    setLogo(sponsor.logo)
- 
+    setLogo(sponsor.logo);
+    setShowForm(true);
   };
 
-  // Delete a sponsor
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://tankwaaddis.onrender.com/sponser/${id}`);
+      await axios.delete(`http://localhost:5000/sponser/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       fetchSponsors();
     } catch (err) {
       console.error('Failed to delete sponsor', err);
     }
   };
 
-  return (
-    <div className="min-h-screen p-10 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50">
-     {visible &&
-      <form className="bg-white p-6 rounded-lg shadow-lg mb-10" onSubmit={handleFormSubmit}>
-        <h2 className="text-2xl font-semibold mb-4">{editId ? 'Edit Sponsor' : 'Add Sponsor'}</h2>
-        <span className="text-red-700 absolute top-10 right-10 cursor-pointer text-2xl" onClick={()=>setVisible(false)}>&times;</span>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={formData.name}
-            onChange={handleInputChange}
-            className="p-2 border rounded"
-            required
-          />
-          <input
-            type="file"
-            name="logo"
-            onChange={handleFileChange}
-            className="p-2 border rounded"
-         //   required={!editId} // Only required for new sponsors
-          />
-          <input
-            type="text"
-            name="url"
-            placeholder="Website URL"
-            value={formData.url}
-            onChange={handleInputChange}
-            className="p-2 border rounded"
-            required
-          />
-          <input
-            type="text"
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleInputChange}
-            className="p-2 border rounded"
-          />
-          <input
-            type="text"
-            name="twitter"
-            placeholder="Twitter URL"
-            value={formData.twitter}
-            onChange={handleInputChange}
-            className="p-2 border rounded"
-          />
-          <input
-            type="text"
-            name="facebook"
-            placeholder="Facebook URL"
-            value={formData.facebook}
-            onChange={handleInputChange}
-            className="p-2 border rounded"
-          />
-          <input
-            type="text"
-            name="instagram"
-            placeholder="Instagram URL"
-            value={formData.instagram}
-            onChange={handleInputChange}
-            className="p-2 border rounded"
-          />
-        </div>
-        <button
-          type="submit"
-          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          {editId ? 'Update Sponsor' : 'Add Sponsor'}
-        </button>
-      </form>
-}
+  const togglePublish = async (id, currentStatus) => {
+    console.log(id)
+    // try {
+    //   await axios.patch(`http://localhost:5000/sponser/${id}`, 
+    //     { isPublished: !currentStatus },
+    //     { headers: { Authorization: `Bearer ${token}` }
+    //   );
+    //   fetchSponsors();
+    // } catch (err) {
+    //   console.error('Failed to update publish status', err);
+    // }
+  };
 
-     {!visible &&
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <div className="absolute bottom-10 right-10 bg-slate-400 p-4 w-16 h-16 rounded-full flex justify-center items-center">
-      <button className="text-blue-800 text-4xl hover:text-blue-600 hover:scale-125 transition-transform duration-200 cursor-pointer" onClick={()=>setVisible(true)}>+</button>
-      </div>
-        {sponsors.map((sponsor) => (
-          <div key={sponsor._id} className="bg-white p-4 rounded-lg shadow-md">
-            <h3 className="text-xl font-semibold mb-2">{sponsor.name}</h3>
-            <img src={`${sponsor.logo}`} alt={sponsor.name} className="w-24 h-24 object-contain mb-2" />
-            <p className="text-gray-600 text-sm mb-2">{sponsor.description}</p>
-            <div className="flex space-x-2">
-              <button
-                className="text-blue-600 hover:text-blue-800"
-                onClick={() => handleEdit(sponsor)}
-              >
-                <FaEdit />
-              </button>
-              <button
-                className="text-red-600 hover:text-red-800"
-                onClick={() => handleDelete(sponsor._id)}
-              >
-                <FaTrash />
-              </button>
-            </div>
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      logo: null,
+      url: '',
+      description: '',
+      twitter: '',
+      facebook: '',
+      instagram: '',
+      isPublished: false
+    });
+    setEditId(null);
+    setShowForm(false);
+  };
+
+  return (
+    <div className="min-h-screen p-4 bg-gray-50">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold text-gray-800">Sponsor Management</h1>
+          <button
+            onClick={() => setShowForm(true)}
+            className="flex items-center bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700"
+          >
+            <FaPlus className="mr-1" /> Add Sponsor
+          </button>
+        </div>
+
+        {showForm && (
+          <div className="bg-white p-4 rounded-lg shadow-md mb-6 relative">
+            <h2 className="text-lg font-semibold mb-4">
+              {editId ? 'Edit Sponsor' : 'Add Sponsor'}
+            </h2>
+            <button
+              onClick={resetForm}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              ×
+            </button>
+            
+            <form onSubmit={handleFormSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded text-sm"
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Logo</label>
+                <input
+                  type="file"
+                  name="logo"
+                  onChange={handleFileChange}
+                  className="w-full p-1 border rounded text-sm"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
+                <input
+                  type="text"
+                  name="url"
+                  value={formData.url}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded text-sm"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <input
+                  type="text"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded text-sm"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Twitter</label>
+                <input
+                  type="text"
+                  name="twitter"
+                  value={formData.twitter}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded text-sm"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Facebook</label>
+                <input
+                  type="text"
+                  name="facebook"
+                  value={formData.facebook}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded text-sm"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Instagram</label>
+                <input
+                  type="text"
+                  name="instagram"
+                  value={formData.instagram}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border rounded text-sm"
+                />
+              </div>
+              
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="isPublished"
+                  checked={formData.isPublished}
+                  onChange={(e) => setFormData({...formData, isPublished: e.target.checked})}
+                  className="mr-2"
+                />
+                <label className="text-sm font-medium text-gray-700">Published</label>
+              </div>
+              
+              <div className="md:col-span-2">
+                <button
+                  type="submit"
+                  className="bg-blue-600 text-white px-4 py-2 rounded text-sm hover:bg-blue-700"
+                >
+                  {editId ? 'Update Sponsor' : 'Add Sponsor'}
+                </button>
+              </div>
+            </form>
           </div>
-        ))}
-      </div>}
+        )}
+
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Logo</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Website</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {sponsors.map((sponsor) => (
+                <tr key={sponsor._id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 object-contain" />
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {sponsor.name}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <a href={sponsor.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {sponsor.url}
+                    </a>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${sponsor.isPublished ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      {sponsor.isPublished ? 'Published' : 'Draft'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => togglePublish(sponsor._id, sponsor.isPublished)}
+                        className="text-gray-600 hover:text-gray-900"
+                        title={sponsor.isPublished ? 'Unpublish' : 'Publish'}
+                      >
+                        {sponsor.isPublished ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                      <button
+                        onClick={() => handleEdit(sponsor)}
+                        className="text-blue-600 hover:text-blue-900"
+                        title="Edit"
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(sponsor._id)}
+                        className="text-red-600 hover:text-red-900"
+                        title="Delete"
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

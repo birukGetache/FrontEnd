@@ -7,11 +7,13 @@ import { FaMapMarkerAlt, FaCalendarCheck } from "react-icons/fa";
 import styled from 'styled-components';
 import '../i18n';
 
-const Destination = ({ setDestnation, setVisibleCardId }) => {
+const Destination = ({ setDestnation, setVisibleCardId , setCurrency , currency }) => {
   const { t, i18n } = useTranslation();
   const [showAllDestinations, setShowAllDestinations] = useState(false);
   const [filteredDestinations, setFilteredDestinations] = useState([]);
-  const initialDestinationsToShow = 8;
+  const [exchangeRates, setExchangeRates] = useState({});
+
+  const initialDestinationsToShow = 19;
   const destinationsToShow = showAllDestinations
     ? filteredDestinations
     : filteredDestinations.slice(0, initialDestinationsToShow);
@@ -73,7 +75,7 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
   useEffect(() => {
     const fetchDestinations = async () => {
       try {
-        const response = await fetch('https://tankwaaddis.onrender.com/destinations');
+        const response = await fetch('http://localhost:5000/destinations');
         const data = await response.json();
         setFilteredDestinations(data);
       } catch (error) {
@@ -84,7 +86,35 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
     fetchDestinations();
   }, []);
 
-  // Animation variants
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const response = await fetch("https://open.er-api.com/v6/latest/ETB");
+        const data = await response.json();
+        console.log("Exchange Rates:", data); // ✅ DEBUG HERE
+        setExchangeRates(data.rates);
+      } catch (err) {
+        console.error("Error fetching exchange rates", err);
+      }
+    };
+  
+    fetchRates();
+  }, []);
+  
+
+  const convertPrice = (priceInETB) => {
+    // if currency is ETB or rates not loaded yet, just return original price
+    if (currency === "ETB") return `${priceInETB.toFixed(2)} ETB`;
+  
+    if (!exchangeRates || !exchangeRates[currency]) {
+      return "Loading...";
+    }
+  
+    const rate = exchangeRates[currency];
+    const converted = priceInETB * rate;
+    return `${converted.toFixed(2)} ${currency}`;
+  };
+  
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -126,7 +156,7 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
 
   return (
     <div className="mt-0 pt-0" id="Destination">
-      <motion.h1 
+      <motion.h1
         className="text-gray-500 text-start text-4xl ml-32 capitalize"
         initial="hidden"
         whileInView="visible"
@@ -135,6 +165,22 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
       >
         {t('destinationTitle')}
       </motion.h1>
+
+      {/* Currency selector */}
+      <div className="flex justify-end mt-6 mr-44">
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="px-4 py-2 border border-gray-300 rounded-xl shadow-md text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition duration-300 ease-in-out hover:border-gray-500"
+  >
+    <option className="text-gray-700 bg-white" value="ETB">🇪🇹 ETB (Birr)</option>
+    <option className="text-gray-700 bg-white" value="USD">🇺🇸 USD</option>
+    <option className="text-gray-700 bg-white" value="EUR">🇪🇺 EUR</option>
+    <option className="text-gray-700 bg-white" value="GBP">🇬🇧 GBP</option>
+    <option className="text-gray-700 bg-white" value="KES">🇰🇪 KES</option>
+  </select>
+</div>
+
 
       <ResponsiveMasonry
         columnsCountBreakPoints={{
@@ -153,16 +199,15 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
               whileInView="visible"
               viewport={{ once: true, margin: "-50px" }}
               transition={{ delay: index * 0.1 }}
-              className="relative flex flex-col h-full rounded-xl  hover:shadow-xl transition-shadow duration-300 cursor-pointer overflow-hidden 
+              className="relative flex flex-col h-full rounded-xl hover:shadow-xl transition-shadow duration-300 cursor-pointer overflow-hidden 
                backdrop-blur-md 
-    border border-blue-500/40 
-    bg-gradient-to-br from-white/25 to-white/10 
-    text-blue-600 font-semibold text-sm 
-    shadow-md shadow-black/10 "
+               border border-blue-500/40 
+               bg-gradient-to-br from-white/25 to-white/10 
+               text-blue-600 font-semibold text-sm 
+               shadow-md shadow-black/10"
               whileHover={{ y: -5, scale: 1.02 }}
             >
-              {/* Image - Fixed aspect ratio */}
-              <motion.div 
+              <motion.div
                 className="w-[85%] mx-auto mt-5 aspect-video"
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -176,9 +221,8 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
                 />
               </motion.div>
 
-              {/* Content */}
               <div className="p-4 flex flex-col">
-                <motion.div 
+                <motion.div
                   className="flex items-start gap-2 mb-2"
                   initial={{ opacity: 0, x: -10 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -193,7 +237,7 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
                   </div>
                 </motion.div>
 
-                <motion.div 
+                <motion.div
                   className="mb-4 min-h-[60px] max-h-[120px] overflow-hidden"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -203,6 +247,12 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
                   <p className="text-gray-600 line-clamp-4">
                     {destination.descriptions[i18n.language]}
                   </p>
+
+                  {destination?.price ? (
+                    <p className="text-gray-700 font-medium mt-2">
+                      {t("price")}: {convertPrice(destination.price)}
+                    </p>
+                  ) : null}
                 </motion.div>
 
                 <motion.div
@@ -216,7 +266,6 @@ const Destination = ({ setDestnation, setVisibleCardId }) => {
                       setDestnation(destination);
                       setVisibleCardId(destination._id);
                     }}
-                    className="flex items-center gap-2 text-gray-400 hover:text-white font-medium text-sm bg-gray-900 mt-auto"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >

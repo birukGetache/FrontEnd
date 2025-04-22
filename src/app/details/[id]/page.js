@@ -11,10 +11,15 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { useTranslation } from "react-i18next";
 // import { useNavigation } from "react-router-dom";
 const DetailPage = () => {
+  const [price , setPrice] = useState(0);
+  const [exchangeRates, setExchangeRates] = useState({});
+  const [truepromo , setTruePromo] = useState(null);
+  const [waiting , setWaiting] = useState(false)
     const { t, i18n } = useTranslation(); // Get the current language from i18n
   const router = useRouter();
   const pathname = usePathname(); // Get the current path of the page
   const id = pathname.split("/").pop(); 
+  console.log(id)
   const [destinations, setDestinations] = useState('');
   const [light , setLight] = useState(true)
   useEffect(() => {
@@ -30,9 +35,11 @@ const DetailPage = () => {
   useEffect(() => {
       const fetchDestinations = async () => {
         try {
-          const response = await fetch(`https://tankwaaddis.onrender.com/destinations/${id}`); // Replace with your API endpoint
+          const response = await fetch(`http://localhost:5000/destinations/${id}`); // Replace with your API endpoint
           const data = await response.json();
+          console.log(data)
           setDestinations(data.titles[i18n.language]);
+          setPrice(data.price)
           console.log(data)
         } catch (error) {
           console.error("Error fetching destinations:", error);
@@ -51,7 +58,7 @@ const DetailPage = () => {
     promocode:'',
     middleName:'',
     preferredDate: '',
-    amount :100,
+    destinationID :id,
     departureLocation: 'Bahir Dar',
     destinationLocation: '',
     numberOfPassengers: 1,
@@ -64,13 +71,75 @@ const DetailPage = () => {
       destinationLocation: destinations, // Update the formData state
     }));
   }, [destinations]);
+  const handleChange = async (e) => {
+    const { name, value } = e.target;
+  
+    // Update form state
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    if (name=="promocode"&&(value.length > 0 && value.length < 8)) {
+      setWaiting(true);
+    } else if (value.length === 0) {
+      setWaiting(false);
+      setTruePromo(null); // Reset promo status when empty
+    } else {
+      setWaiting(false);
+    }
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+   
+  
+    // Only check promo when 'promocode' is typed and is 8 characters
+    if (name === "promocode" && value.length === 8) {
+      try {
+        const response = await fetch("http://localhost:5000/checkPromo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ promoCode: value }), // Send it as an object!
+        });
+  
+        const data = await response.json();
+        console.log("Promo response:", data);
+        // Optional: Handle valid/invalid promo UI here
+        if (data.valid) {
+          // e.g., setDiscount(data.discount), show success
+          console.log("✅ Valid Promo Code!");
+          setTruePromo(true)
+        } else {
+          // e.g., show error message
+          console.log("❌ Invalid Promo Code");
+          setTruePromo(false)
+        }
+      } catch (error) {
+        console.error("Error checking promo code:", error);
+      }
+    }
   };
+  
+
+  const rate = exchangeRates[formData.currency] ?? 1;
+  const convertedPrice = (price * rate).toFixed(2);
+
+
+  
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const response = await fetch("https://open.er-api.com/v6/latest/ETB");
+        const data = await response.json();
+        console.log("Exchange Rates:", data); // ✅ DEBUG
+        setExchangeRates(data.rates || {});
+      } catch (err) {
+        console.error("Error fetching exchange rates", err);
+      }
+    };
+
+    fetchRates();
+  }, []);
+
 
 const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,7 +168,7 @@ const handleSubmit = async (e) => {
     try {
       console.log("we are here baby")
       console.log("we are here nati and baby")
-        const response = await axios.post("https://tankwaaddis.onrender.com/PostTransaction", formData);
+        const response = await axios.post("http://localhost:5000/PostTransaction", formData);
         console.log("we are here nati")
         console.log(response.data);
 
@@ -368,7 +437,43 @@ const handleSubmit = async (e) => {
             </div>
           </div>
         </div>
-  
+       {waiting && <div class="flex items-center p-4 mb-4 text-yellow-800 border border-yellow-300 rounded-lg bg-yellow-50" role="alert">
+  <svg class="w-5 h-5 mr-2 text-yellow-700 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v4m0 8v4m8-8h-4m-8 0H4m15.36-5.36l-2.83 2.83M6.64 6.64l2.83 2.83m0 5.06l-2.83 2.83m11.31 0l-2.83-2.83" />
+  </svg>
+  <span class="text-sm font-medium">Waiting for promo code verification...</span>
+</div>} 
+{truepromo === false &&(
+      <p className="text-sm text-red-500 mt-1">Invalid promo code. Price remains the same.</p>
+)}
+
+ <div className="bg-white rounded-2xl shadow-lg p-4 w-full max-w-sm mx-auto my-4 flex justify-between items-center">
+  <div>
+    <h2 className="text-sm font-medium text-gray-600">Price Per Passenger</h2>
+    <p className="text-blue-600 text-lg font-bold">{convertedPrice} &nbsp;&nbsp;&nbsp;{formData.currency} </p>
+  </div>
+
+{truepromo === true && (
+  <div>
+    <h2 className="text-sm font-medium text-gray-600">Total Price (with promo)</h2>
+    <p className="text-green-600 text-lg font-bold">
+      {convertedPrice * formData.numberOfPassengers - 10}&nbsp;&nbsp;&nbsp;&nbsp;{formData.currency}
+    </p>
+  </div>
+)}
+
+{(truepromo === false || truepromo === null) && (
+  <div>
+    <h2 className="text-sm font-medium text-gray-600">Total Price</h2>
+    <p className="text-red-600 text-lg font-bold">
+      {convertedPrice * formData.numberOfPassengers}&nbsp;&nbsp;&nbsp;&nbsp;{formData.currency}
+    </p>
+
+  </div>
+)}
+
+</div>
+
         {/* Submit Button */}
         <button
           type="submit"

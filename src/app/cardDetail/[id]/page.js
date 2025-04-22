@@ -95,9 +95,9 @@ export default function CardDetailsPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen ">
       {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-10">
+      <header className=" shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link href="/" className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium text-lg">
             <FaArrowLeft className="mr-2 text-blue-700" /> Back to Home
@@ -112,7 +112,7 @@ export default function CardDetailsPage({ params }) {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+        <div className="rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow duration-300">
           {/* Image Header */}
           <div className="relative h-96 w-full group">
             <Image 
@@ -123,7 +123,7 @@ export default function CardDetailsPage({ params }) {
               priority
             />
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-              <span className="inline-block px-3 py-1 bg-white text-sm font-semibold rounded-full mb-2 shadow-md">
+              <span className="inline-block px-3 py-1  text-sm font-semibold rounded-full mb-2 shadow-md">
                 {card.category}
               </span>
               <h1 className="text-3xl md:text-4xl font-bold text-white drop-shadow-md">{card.title}</h1>
@@ -156,8 +156,13 @@ export default function CardDetailsPage({ params }) {
           </div>
 
           {/* Content Section */}
-          <div className="p-6 md:p-8">
-            <div className="flex flex-col md:flex-row gap-8">
+          <div className="p-6 md:p-8 
+            backdrop-blur-md 
+               border border-blue-500/40 
+               bg-gradient-to-br from-white/25 to-white/10 
+               text-blue-600 font-semibold text-sm 
+               shadow-md shadow-black/10">
+            <div className="flex flex-col md:flex-row gap-8 ">
               {/* Main Content */}
               <div className="md:w-3/3">
                 <div className="flex items-center gap-4 mb-6 flex-wrap">
@@ -176,10 +181,10 @@ export default function CardDetailsPage({ params }) {
                   </div>
                 </div>
 
-                <p className="text-lg text-gray-700 mb-6 leading-relaxed">{card.description}</p>
+                <p className="text-lg text-gray-500 mb-6 leading-relaxed">{card.description}</p>
 
                 <div className="mb-8">
-                  <h2 className="text-2xl font-bold mb-4 text-gray-800 border-b pb-2 border-gray-200">Experience Highlights</h2>
+                  <h2 className="text-2xl font-bold mb-4 text-gray-500 border-b pb-2 border-gray-200">Experience Highlights</h2>
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {card.highlights.map((highlight, index) => (
                       <li key={index} className="flex items-start bg-blue-50/30 hover:bg-blue-50 transition-colors p-3 rounded-lg">

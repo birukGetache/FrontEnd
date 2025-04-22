@@ -43,7 +43,7 @@ const BookingDetailsPage = () => {
     if (_id) {
       const fetchBookingDetails = async () => {
         try {
-          const response = await axios.get(`https://tankwaaddis.onrender.com/booking/${_id}`);
+          const response = await axios.get(`http://localhost:5000/booking/${_id}`);
           setData(response.data);
         } catch (error) {
           console.error("Error fetching booking details:", error);
@@ -449,7 +449,11 @@ const BookingDetailsPage = () => {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-white bg-opacity-90 p-10 rounded-3xl shadow-2xl relative max-w-md w-full"
+              className="  backdrop-blur-md 
+               border border-blue-500/40 
+               bg-gradient-to-br from-white/25 to-white/10 
+               text-blue-600 font-semibold text-sm 
+               shadow-md shadow-black/10 p-10 rounded-3xl  relative max-w-md w-full"
               onClick={(e) => e.stopPropagation()}
             >
               <motion.button
