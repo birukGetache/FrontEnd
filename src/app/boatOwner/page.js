@@ -4,6 +4,7 @@ import { FiCalendar, FiDollarSign, FiClock,FiCheckCircle, FiAlertCircle, FiMapPi
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import SideBar from "@components/BoatOwner/Sidebar";
 import Bookings from "@components/BoatOwner/Booking";
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import axios from "axios";
 import { Chart, registerables } from 'chart.js';
